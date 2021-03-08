@@ -1,0 +1,6 @@
+from cassandra.cluster import Cluster
+cluster = Cluster(['127.0.0.1'])
+session = cluster.connect()
+
+keyspaces = session.execute("SELECT * FROM system_schema.keyspaces;")
+session.execute("""CREATE KEYSPACE IF NOT EXISTS record_label WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };""")
