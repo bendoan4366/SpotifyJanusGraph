@@ -1,0 +1,59 @@
+##start cassandra
+bin/cassandra
+bin/nodetool status
+
+
+##check keyspaces with python
+python3
+
+from cassandra.cluster import Cluster
+cluster = Cluster()
+session = cluster.connect()
+
+##create graph
+graph = GraphFactory.open('conf/janus-tutorial/janusgraph-tutorial-config.properties')
+
+
+##basic traversals
+g = graph.traversal()
+g.V().count()
+
+
+g.addV("artist").property("name", "Kendrick Lamar").property("age", 33)
+g.addV("artist").property("name", "Schoolboy Q").property("age", 34)
+g.addV("artist").property("name", "Thundercat").property("age", 36)
+g.addV("artist").property("name", "Childish Gambino").property("age", 37)
+
+g.addV("song").property("name", "Wesleys Theory").property("runtime", 287)
+g.addV("song").property("name", "U").property("runtime", 268)
+g.addV("song").property("name", "Rolling Stone").property("runtime", 217)
+g.addV("song").property("name", "3005").property("runtime", 234)
+g.addV("song").property("name", "Dragonball Durag").property("runtime", 182)
+
+
+g.addV("album").property("name", "To Pimp a Butterfly").property("release_year", 2015)
+g.addV("album").property("name", "Habits and Contradictions").property("release_year", 2012)
+g.addV("album").property("name", "Because the Internet").property("release_year", 2013)
+g.addV("album").property("name", "It Is What It Is").property("release_year", 2020)
+
+g.V().has("name", "Kendrick Lamar").addE("lead artist Of").to(g.V().hasLabel("song").has("name", "U"))
+g.V().has("name", "Kendrick Lamar").addE("lead artist Of").to(g.V().hasLabel("song").has("name", "Wesleys Theory"))
+g.V().has("name", "Kendrick Lamar").addE("co-produced").to(g.V().hasLabel("album").has("name", "Habits and Contradictions"))
+g.V().has("name", "Kendrick Lamar").addE("featured on").to(g.V().hasLabel("song").has("name", "Rolling Stone"))
+g.V().has("name", "Kendrick Lamar").addE("executive produced").to(g.V().hasLabel("album").has("name", "To Pimp a Butterfly"))
+
+g.V().has("name", "Thundercat").addE("co-produced").to(g.V().hasLabel("album").has("name", "To Pimp a Butterfly"))
+g.V().has("name", "Thundercat").addE("executive produced").to(g.V().hasLabel("album").has("name", "It Is What It Is"))
+g.V().has("name", "Thundercat").addE("featured on").to(g.V().hasLabel("song").has("name", "Wesleys Theory"))
+g.V().has("name", "Thundercat").addE("co-produced").to(g.V().hasLabel("song").has("name", "U"))
+
+g.V().has("name", "Schoolboy Q").addE("executive produced").to(g.V().hasLabel("album").has("name", "Habits and Contradictions"))
+g.V().has("name", "Schoolboy Q").addE("Lead Artist Of").to(g.V().hasLabel("song").has("name", "Rolling Stone"))
+
+g.V().has("name", "U").addE("listed on").to(g.V().hasLabel("album").has("name", "To Pimp a Butterfly"))
+g.V().has("name", "Dragonball Durag").addE("listed on").to(g.V().hasLabel("album").has("name", "It Is What It Is"))
+g.V().has("name", "Rolling Stone").addE("listed on").to(g.V().hasLabel("album").has("name", "Habits and Contradictions"))
+g.V().has("name", "Wesleys Theory").addE("listed on").to(g.V().hasLabel("album").has("name", "To Pimp a Butterfly"))
+
+kendrick = g.V().hasLabel("artist").has("name", "Kendrick Lamar").next()
+g.V(kendrick).out().in().hasLabel("artist").where(is(neq(kendrick))).groupCount().by("name")
