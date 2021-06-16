@@ -1,0 +1,5 @@
+Using the an appropriately versioned cassandra docker image (check compatibility here: https://docs.janusgraph.org/changelog/) create a docker image that does the following:
+
+set up cassandra and start the cassandra server
+create a cassandra keyspace for Janusgraph-Spotify
+set up elasticsearch and start the elasticsearch server
