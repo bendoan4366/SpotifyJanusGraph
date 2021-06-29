@@ -1,0 +1,30 @@
+version: '3'
+
+#creates and links 2 containers on a single image
+#1 container is for elasticsearch and the other for cassandra
+
+networks:
+#specify the name of the bridge
+ spotify-janus-graph:
+  driver: bridge
+
+services: 
+#start cassandra server
+ cassandra:
+  container_name: cassandra
+  image: cassandra:3.11
+  #linked cassandra server to network
+  networks:
+   - spotify-janus-graph
+  ports:
+   - "9042:9042"
+ 
+#start initiate elastic search
+ elastic-search:
+  image: elasticsearch:7.13.2
+  networks:
+  #link elastic search to the network 
+  - spotify-janus-graph   
+
+    
+
