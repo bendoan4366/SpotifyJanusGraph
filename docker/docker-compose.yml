@@ -24,7 +24,16 @@ services:
   image: elasticsearch:7.13.2
   networks:
   #link elastic search to the network 
-  - spotify-janus-graph   
+  - spotify-janus-graph
+  ports:
+   - "9200:9200"
 
+ cqlsh:
+  image: cassadra: 3.11
+  entrypoint: cqlsh cassandra
+  networks:
+   - spotify-janus-graph
+  volumes:
+   - ./schema.cql
     
 
