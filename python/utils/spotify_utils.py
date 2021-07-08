@@ -1,6 +1,6 @@
 import pandas as pd
 
-def get_user_playlists(spotipy, user):
+def get_user_playlists_dataframe(spotipy, user):
 
     user_playlists = spotipy.user_playlists(user)
     playlist_dataframe = pd.DataFrame.from_dict(user_playlists['items'])
@@ -8,7 +8,7 @@ def get_user_playlists(spotipy, user):
     return playlist_dataframe
 
 
-def get_playlist_tracks(spotipy, playlist_id):
+def get_playlist_tracks_dataframe(spotipy, playlist_id):
 
     playlist_items = spotipy.playlist_items(playlist_id)
     print(type(playlist_items))
